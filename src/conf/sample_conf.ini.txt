@@ -1,0 +1,32 @@
+; Automatic Server Backup by WinSCP v1.0.0
+; 
+; Copyright 2012, Kaoru Ishikura
+; Licensed under the GPL Version 3 licenses.
+;
+; Server environment variables.
+; ##############################################
+; Specify the path to the backup folder.
+BACKUP_DIR_PATH=
+; Specify the path to the remote folder.
+REMOTE_DIR_PATH=
+; Specify the protocol(sftp/scp/ftp/ftps).
+PROTOCOL=
+; Specify the port number.
+PORT_NUMBER=
+; Specify the hostname or the IP address.
+HOST_NAME=
+; Specify the username.
+USER_NAME=
+; Specify the password.
+PASSWORD=
+; Specify the SSH server host key with the fingerprint. SFTP and SCP protocols.
+HOST_KEY=
+; Specify the SSL/TLS certificate with the fingerprint. FTPS protocol only.
+CERTIFICATE=
+; Specify the private key path. SCP protocol only.
+PRIVATE_KEY=
+; Specify the maximum number of times the synchronization is to be retried.
+MAX_SYNC_RETRIES=5
+; Specify the maximum number of the backup.
+MAX_BACKUP=20
+; ##############################################
