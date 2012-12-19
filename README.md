@@ -85,6 +85,10 @@ WinSCPとWindowsのタスク機能を使用して自動的にサーバーのバ�
    * COMPRESSION_TYPE  
    圧縮のタイプを指定します。(zip/7z)  
    例)7z
+   
+   * COMPRESSION_LEVEL  
+   圧縮のレベルを指定します。(0/1/3/5/7/9)  
+   例)7
 
 ###サーバー環境変数
    
