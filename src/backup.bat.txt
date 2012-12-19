@@ -1,6 +1,6 @@
 Echo off
 
-Rem Automatic Server Backup by WinSCP v1.1.0
+Rem Automatic Server Backup by WinSCP v1.1.2
 Rem 
 Rem Copyright 2012, Kaoru Ishikura
 Rem Licensed under the GPL Version 3 licenses.
@@ -27,8 +27,6 @@ Rem Search for saved config batch files.
 For /f %%f In ('Dir /b "%CONF_DIR%\*.ini"') Do (
     Echo --------------------------------------------------
     Echo ファイル名：%%f
-    Echo 開始時刻：%date% %time%
-    Echo;
     For /f "usebackq eol=; tokens=1,2 delims==" %%a In ("%CONF_DIR%\%%f") Do (
         For %%i In (BACKUP_DIR_PATH REMOTE_DIR_PATH PROTOCOL PORT_NUMBER HOST_NAME USER_NAME PASSWORD HOST_KEY CERTIFICATE PRIVATE_KEY MAX_SYNC_RETRIES MAX_BACKUP) Do (
             If /i "%%a"=="%%i" Set %%i=%%b
@@ -48,12 +46,15 @@ Goto :EOF
 Rem Start main routine.
 :main
 
+Echo 開始時刻：%date% %time%
+Echo;
+
 Rem Set the path to the latest folder or the latest zip file.
-For /f "tokens=1" %%f In ('Dir /a:-s-h-r /b /o:d "%BACKUP_DIR_PATH%\*"') Do (
+For /f "tokens=1" %%f In ('Dir /a:-s-h-r /b /o:-d "%BACKUP_DIR_PATH%\*"') Do (
     Set LATEST_FILE_NAME=%%f
-    Goto break
+    Goto break1
 )
-:break
+:break1
 
 Set LATEST_BACKUP_PATH=%BACKUP_DIR_PATH%\%LATEST_FILE_NAME%
 
@@ -66,20 +67,28 @@ Set TEMP_DIR_PATH=%BACKUP_DIR_PATH%\tmp
 If Not Exist "%TEMP_DIR_PATH%" Mkdir "%TEMP_DIR_PATH%"
 
 Rem Copy the latest backup to the new folder or unzip.
-For /f %%f In  ('Echo %LATEST_FILE_NAME%') Do Set LATEST_FILE_EXTENSION=%%~xf
-If Exist "%LATEST_BACKUP_PATH%\" (
-    Echo ファイルをコピー中...
-    Echo;
-    Xcopy "%LATEST_BACKUP_PATH%" "%NEW_BACKUP_PATH%\" /e /q /h /y
-) Else If Exist "%SEVEN_ZIP_PATH%" (
-    If Not "%LATEST_FILE_EXTENSION%" == ".zip" If Not "%LATEST_FILE_EXTENSION%" == ".7z" (
-        Goto skip
+If Not "%LATEST_FILE_NAME%" == "" (
+    For /f %%f In ('Echo %LATEST_FILE_NAME%') Do (
+        Set LATEST_FILE_EXTENSION=%%~xf
+        Goto break2
     )
-    Echo ファイルを解凍中...
-    Echo;
-    "%SEVEN_ZIP_PATH%" x -y "%LATEST_BACKUP_PATH%" -o"%NEW_BACKUP_PATH%">NUL
+:break2
+    If Exist "%LATEST_BACKUP_PATH%\" (
+        Echo ファイルをコピー中...
+        Xcopy "%LATEST_BACKUP_PATH%" "%NEW_BACKUP_PATH%\" /e /q /h /y
+        Echo;
+    ) Else If Exist "%SEVEN_ZIP_PATH%" (
+        If Not "%LATEST_FILE_EXTENSION%" == ".zip" If Not "%LATEST_FILE_EXTENSION%" == ".7z" (
+            Goto skip
+        )
+        Echo ファイルを解凍中...
+        "%SEVEN_ZIP_PATH%" x -y "%LATEST_BACKUP_PATH%" -o"%NEW_BACKUP_PATH%">NUL
+        Echo ファイルを解凍しました
+        Echo;
+    )
 )
 :skip
+If Not Exist "%NEW_BACKUP_PATH%" Mkdir "%NEW_BACKUP_PATH%"
 
 Rem Delete ftp log files.
 Del /q "%NEW_BACKUP_PATH%\scp*.log"
@@ -116,7 +125,7 @@ Echo サーバーと同期中...
 
 Rem Run the WinSCP by batch mode.
 :sync
-"%WINSCP_PATH%" /console /log="%SCP_LOG_PATH%" /script="%SCP_BAT_PATH%"
+"%WINSCP_PATH%" /log="%SCP_LOG_PATH%" /script="%SCP_BAT_PATH%"
 
 Rem If synchronization fails, retry.
 Find "%TIMEOUT_MESSAGE%" "%SCP_LOG_PATH%">NUL
