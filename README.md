@@ -31,13 +31,16 @@ WinSCPとWindowsのタスク機能を使用して自動的にサーバーのバ�
    設定を自身の環境に合わせて変更し、保存します。  
    (設定については、「4. 設定 > ・バックアップ環境変数」を参照)
 
-4. 「backup.bat.txt」ファイルのファイル名の.txt部分を削除します。(backup.bat)
+4. 「backup.bat.txt」ファイルのファイル名の.txt部分を削除します。(例：backup.bat)
 
 5. Windowsのタスクに「backup.bat」ファイルを登録します。  
    ※タスクの登録方法は下記を参照してください。
      * [Windows XP][LINK-WINXP-ADDTASK]
      * [Windows Vista][LINK-WINVISTA-ADDTASK]
-     * [Windows 7][LINK-WIN7-ADDTASK]
+     * [Windows 7][LINK-WIN7-ADDTASK]  
+
+   ※Windows Vista以降で「ユーザー・アカウント制御（UAC）」を有効にしている場合は、  
+     「セキュリティ オプション」の「最上位の特権で実行する」にチェックを入れてください。
 
 ###圧縮モードを使用する
 圧縮モードとは、ダウンロードしたデーターを7-Zipを利用して自動的に圧縮する機能です。  
@@ -148,7 +151,7 @@ WinSCPとWindowsのタスク機能を使用して自動的にサーバーのバ�
       バックアップしたいサーバーの情報を設定し、保存します。  
       (設定については、「4. 設定 > ・サーバー環境変数」を参照)
 
-   3. 複製したファイルをお好きなファイル名に変更し、.txt部分を削除します。(mybackup.ini)
+   3. 複製したファイルをお好きなファイル名に変更し、.txt部分を削除します。(例：mybackup.ini)
 
    4. 完了です。
 
