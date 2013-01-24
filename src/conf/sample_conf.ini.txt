@@ -25,6 +25,8 @@ HOST_KEY=
 CERTIFICATE=
 ; Specify the private key path. SCP protocol only.
 PRIVATE_KEY=
+; Specify the mask to synchronize folders and files.
+FILE_MASK=
 ; Specify the maximum number of times the synchronization is to be retried.
 MAX_SYNC_RETRIES=5
 ; Specify the maximum number of the backup.

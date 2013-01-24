@@ -135,6 +135,13 @@ WinSCPとWindowsのタスク機能を使用して自動的にサーバーのバ�
    秘密鍵のパスを指定します。(SCPプロトコルを使用する場合)  
    例)C:\my_private_key.ppk
    
+   * FILE_MASK  
+   バックアップに含めるまたは除外する、フォルダーまたはファイルのマスクを指定します。  
+   「|」の左側が包含、右側が除外するマスクになります。また、「,」区切りで複数のマスクを指定できます。  
+   下記の例は、『「bar」フォルダーを同期する。但し、「foo」フォルダーと「.bak」が名前の最後に付いたファイルを除外する。』となります。  
+   ※マスクの詳しい書き方は、WinSCPのサイトの[Masks][LINK-WINSCP-MASKS]ページ（英語）を参照してください。  
+   例)/path/to/remote/bar/ | /path/to/remote/bar/foo/, *.bak
+   
    * MAX_SYNC_RETRIES(必須)  
    サーバー接続のリトライ回数を指定します。  
    例)5
@@ -169,4 +176,5 @@ Licensed under the [GPL Version 3 licenses][GPL].
 [LINK-WINVISTA-ADDTASK]: http://windows.microsoft.com/ja-JP/windows-vista/Schedule-a-task
 [LINK-WIN7-ADDTASK]: http://windows.microsoft.com/ja-JP/windows7/Schedule-a-task
 [LINK-7ZIP]: http://sevenzip.sourceforge.jp/download.html
+[LINK-WINSCP-MASKS]: http://winscp.net/eng/docs/file_mask
 [GPL]: http://www.gnu.org/licenses/gpl.html
