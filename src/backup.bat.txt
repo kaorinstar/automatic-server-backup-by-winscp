@@ -1,8 +1,8 @@
 Echo off
 
-Rem Automatic Server Backup by WinSCP v1.1.2
-Rem 
-Rem Copyright 2012, Kaoru Ishikura
+Rem Automatic Server Backup by WinSCP v1.3.0
+Rem
+Rem Copyright 2013, Kaoru Ishikura
 Rem Licensed under the GPL Version 3 licenses.
 
 Rem Backup environment variables.
@@ -13,10 +13,12 @@ Rem Specify the path to the WinSCP.exe file.
 Set WINSCP_PATH=%~dp0bin\winscp\WinSCP.exe
 Rem Specify the timeout message.
 Set TIMEOUT_MESSAGE=タイムアウトしました
+Rem Specify the connect failed message.
+Set CONNECT_FAILED_MESSAGE=接続に失敗しました
 Rem Specify the path to the 7za.exe file.
-Set SEVEN_ZIP_PATH=
+Set SEVEN_ZIP_PATH=%~dp0bin\7za\7za.exe
 Rem Specify whether to enable compression mode(y/n).
-Set COMPRESSION_MODE=n
+Set COMPRESSION_MODE=y
 Rem Specify the type of compression(zip/7z).
 Set COMPRESSION_TYPE=7z
 Rem Specify the level of compression(0/1/3/5/7/9).
@@ -28,7 +30,7 @@ For /f %%f In ('Dir /b "%CONF_DIR%\*.ini"') Do (
     Echo --------------------------------------------------
     Echo ファイル名：%%f
     For /f "usebackq eol=; tokens=1,2 delims==" %%a In ("%CONF_DIR%\%%f") Do (
-        For %%i In (BACKUP_DIR_PATH REMOTE_DIR_PATH PROTOCOL PORT_NUMBER HOST_NAME USER_NAME PASSWORD HOST_KEY CERTIFICATE PRIVATE_KEY FILE_MASK MAX_SYNC_RETRIES MAX_BACKUP) Do (
+        For %%i In (BACKUP_DIR_PATH REMOTE_DIR_PATH PROTOCOL INVOKING_METHOD PORT_NUMBER HOST_NAME USER_NAME PASSWORD HOST_KEY CERTIFICATE PRIVATE_KEY FILE_MASK MAX_SYNC_RETRIES MAX_BACKUP) Do (
             If /i "%%a"=="%%i" Set %%i=%%b
         )
     )
@@ -48,6 +50,9 @@ Rem Start main routine.
 
 Echo 開始時刻：%date% %time%
 Echo;
+
+Set BACKUP_DIR_PATH=%BACKUP_DIR_PATH%\
+Set BACKUP_DIR_PATH=%BACKUP_DIR_PATH:\\=%
 
 Rem Set the path to the latest folder or the latest zip file.
 For /f "tokens=1" %%f In ('Dir /a:-s-h-r /b /o:-d "%BACKUP_DIR_PATH%\*"') Do (
@@ -83,7 +88,11 @@ If Not "%LATEST_FILE_NAME%" == "" (
         )
         Echo ファイルを解凍中...
         "%SEVEN_ZIP_PATH%" x -y "%LATEST_BACKUP_PATH%" -o"%NEW_BACKUP_PATH%">NUL
-        Echo ファイルを解凍しました
+        If %ERRORLEVEL% == 0 (
+            Echo ファイルの解凍が完了しました
+        ) Else (
+            Echo ファイルの解凍が失敗しました
+        )
         Echo;
     )
 )
@@ -91,7 +100,7 @@ If Not "%LATEST_FILE_NAME%" == "" (
 If Not Exist "%NEW_BACKUP_PATH%" Mkdir "%NEW_BACKUP_PATH%"
 
 Rem Delete ftp log files.
-Del /q "%NEW_BACKUP_PATH%\scp*.log"
+If Exist "%NEW_BACKUP_PATH%\scp*.log" Del /q "%NEW_BACKUP_PATH%\scp*.log"
 
 Rem Set the path to the WinSCP batch file and log files.
 Set /a CNT=1
@@ -111,8 +120,10 @@ If "%PROTOCOL%" == "sftp" (
 ) Else If "%PROTOCOL%" == "scp" (
     Echo open %SESSION% -privatekey="%PRIVATE_KEY%" -hostkey="%HOST_KEY%">>"%SCP_BAT_PATH%"
 ) Else If "%PROTOCOL%" == "ftps" (
-    Echo open %SESSION% -implicit -certificate="%CERTIFICATE%">>"%SCP_BAT_PATH%"
+    If "%INVOKING_METHOD%" == "" Goto ftp
+    Echo open %SESSION% -%INVOKING_METHOD% -certificate="%CERTIFICATE%">>"%SCP_BAT_PATH%"
 ) Else (
+:ftp
     Echo open %SESSION%>>"%SCP_BAT_PATH%"
 )
 
@@ -133,19 +144,32 @@ Rem Run the WinSCP by batch mode.
 "%WINSCP_PATH%" /log="%SCP_LOG_PATH%" /script="%SCP_BAT_PATH%"
 
 Rem If synchronization fails, retry.
-Find "%TIMEOUT_MESSAGE%" "%SCP_LOG_PATH%">NUL
-If %ERRORLEVEL% == 0 (
-    If %MAX_SYNC_RETRIES% Geq %CNT% (
-        Echo サーバーとの接続がタイムアウトになりました
-        Echo サーバーと再同期中...
-        Set /a CNT=%CNT%+1
-        Set SCP_LOG_PATH=%TEMP_DIR_PATH%\scp%CNT%.log
-        Goto sync
+If Exist "%SCP_LOG_PATH%" (
+    Set ERROR_MESSAGE=
+    Find "%CONNECT_FAILED_MESSAGE%" "%SCP_LOG_PATH%">NUL
+    If %ERRORLEVEL% == 0 (
+        Set ERROR_MESSAGE=サーバーとの接続が失敗しました
+    )
+    Find "%TIMEOUT_MESSAGE%" "%SCP_LOG_PATH%">NUL
+    If %ERRORLEVEL% == 0 (
+        Set ERROR_MESSAGE=サーバーとの接続がタイムアウトになりました
+    )
+    If Not "%ERROR_MESSAGE%" == "" (
+        If %MAX_SYNC_RETRIES% Geq %CNT% (
+            Echo %ERROR_MESSAGE%
+            Echo サーバーと再同期中...
+            Set /a CNT=%CNT%+1
+            Set SCP_LOG_PATH=%TEMP_DIR_PATH%\scp%CNT%.log
+            Goto sync
+        ) Else (
+            Goto failed
+        )
     ) Else (
-        Echo サーバーとの同期が失敗しました
+        Echo サーバーとの同期が完了しました
     )
 ) Else (
-    Echo サーバーとの同期が成功しました
+:failed
+    Echo サーバーとの同期が失敗しました
 )
 Echo;
 
@@ -166,8 +190,12 @@ If Exist "%SEVEN_ZIP_PATH%" If "%COMPRESSION_MODE%" == "y" (
     )
     "%SEVEN_ZIP_PATH%" a -y -mx=%COMPRESSION_LEVEL% ^
     "%NEW_BACKUP_PATH%.%COMPRESSION_TYPE%" "%NEW_BACKUP_PATH%\*">NUL
+    If %ERRORLEVEL% == 0 (
+        Echo ファイルの圧縮が完了しました
+    ) Else (
+        Echo ファイルの圧縮が失敗しました
+    )
     Rmdir /s /q "%NEW_BACKUP_PATH%"
-    Echo ファイルの圧縮が完了しました
     Echo;
 )
 

@@ -1,6 +1,6 @@
-; Automatic Server Backup by WinSCP v1.1.2
-; 
-; Copyright 2012, Kaoru Ishikura
+; Automatic Server Backup by WinSCP v1.3.0
+;
+; Copyright 2013, Kaoru Ishikura
 ; Licensed under the GPL Version 3 licenses.
 ;
 ; Server environment variables.
@@ -11,6 +11,8 @@ BACKUP_DIR_PATH=
 REMOTE_DIR_PATH=
 ; Specify the protocol(sftp/scp/ftp/ftps).
 PROTOCOL=
+; Specify the invoking method(implicit/explicitssl/explicittls). FTPS protocol only.
+INVOKING_METHOD=
 ; Specify the port number.
 PORT_NUMBER=
 ; Specify the hostname or the IP address.

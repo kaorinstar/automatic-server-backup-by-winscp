@@ -77,6 +77,10 @@ WinSCPとWindowsのタスク機能を使用して自動的にサーバーのバ�
    WinSCPのタイムアウトメッセージを指定します。  
    例)タイムアウトしました
    
+   * CONNECT_FAILED_MESSAGE(必須)  
+   WinSCPの接続失敗のメッセージを指定します。  
+   例)接続に失敗しました
+   
    * SEVEN_ZIP_PATH  
    7-Zipの実行ファイルのパスを指定します。  
    例)%~dp0bin\7za\7za.exe
@@ -106,6 +110,10 @@ WinSCPとWindowsのタスク機能を使用して自動的にサーバーのバ�
    * PROTOCOL(必須)  
    プロトコルを指定します。(sftp/scp/ftp/ftps)  
    例)ftp
+   
+   * INVOKING_METHOD  
+   呼び出し方法を指定します。(implicit/explicitssl/explicittls)(FTPSプロトコルを使用する場合)  
+   例)explicitssl
    
    * PORT_NUMBER(必須)  
    ポート番号を指定します。  
