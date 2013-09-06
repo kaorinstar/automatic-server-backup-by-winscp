@@ -1,6 +1,6 @@
 Echo off
 
-Rem Automatic Server Backup by WinSCP v1.3.0
+Rem Automatic Server Backup by WinSCP v1.3.1
 Rem
 Rem Copyright 2013, Kaoru Ishikura
 Rem Licensed under the GPL Version 3 licenses.
@@ -13,12 +13,10 @@ Rem Specify the path to the WinSCP.exe file.
 Set WINSCP_PATH=%~dp0bin\winscp\WinSCP.exe
 Rem Specify the timeout message.
 Set TIMEOUT_MESSAGE=タイムアウトしました
-Rem Specify the connect failed message.
-Set CONNECT_FAILED_MESSAGE=接続に失敗しました
 Rem Specify the path to the 7za.exe file.
-Set SEVEN_ZIP_PATH=%~dp0bin\7za\7za.exe
+Set SEVEN_ZIP_PATH=
 Rem Specify whether to enable compression mode(y/n).
-Set COMPRESSION_MODE=y
+Set COMPRESSION_MODE=n
 Rem Specify the type of compression(zip/7z).
 Set COMPRESSION_TYPE=7z
 Rem Specify the level of compression(0/1/3/5/7/9).
@@ -144,32 +142,19 @@ Rem Run the WinSCP by batch mode.
 "%WINSCP_PATH%" /log="%SCP_LOG_PATH%" /script="%SCP_BAT_PATH%"
 
 Rem If synchronization fails, retry.
-If Exist "%SCP_LOG_PATH%" (
-    Set ERROR_MESSAGE=
-    Find "%CONNECT_FAILED_MESSAGE%" "%SCP_LOG_PATH%">NUL
-    If %ERRORLEVEL% == 0 (
-        Set ERROR_MESSAGE=サーバーとの接続が失敗しました
-    )
-    Find "%TIMEOUT_MESSAGE%" "%SCP_LOG_PATH%">NUL
-    If %ERRORLEVEL% == 0 (
-        Set ERROR_MESSAGE=サーバーとの接続がタイムアウトになりました
-    )
-    If Not "%ERROR_MESSAGE%" == "" (
-        If %MAX_SYNC_RETRIES% Geq %CNT% (
-            Echo %ERROR_MESSAGE%
-            Echo サーバーと再同期中...
-            Set /a CNT=%CNT%+1
-            Set SCP_LOG_PATH=%TEMP_DIR_PATH%\scp%CNT%.log
-            Goto sync
-        ) Else (
-            Goto failed
-        )
+Find "%TIMEOUT_MESSAGE%" "%SCP_LOG_PATH%">NUL
+If %ERRORLEVEL% == 0 (
+    If %MAX_SYNC_RETRIES% Geq %CNT% (
+        Echo サーバーとの接続がタイムアウトになりました
+        Echo サーバーと再同期中...
+        Set /a CNT=%CNT%+1
+        Set SCP_LOG_PATH=%TEMP_DIR_PATH%\scp%CNT%.log
+        Goto sync
     ) Else (
-        Echo サーバーとの同期が完了しました
+        Echo サーバーとの同期が失敗しました
     )
 ) Else (
-:failed
-    Echo サーバーとの同期が失敗しました
+    Echo サーバーとの同期が完了しました
 )
 Echo;
 
