@@ -1,7 +1,7 @@
-; Automatic Server Backup by WinSCP v1.3.1
+; Automatic Server Backup by WinSCP v1.3.2
 ;
-; Copyright 2013, Kaoru Ishikura
-; Licensed under the GPL Version 3 licenses.
+; Copyright 2014, Kaoru Ishikura
+; Released under the GPL Version 3 license.
 ;
 ; Server environment variables.
 ; ##############################################

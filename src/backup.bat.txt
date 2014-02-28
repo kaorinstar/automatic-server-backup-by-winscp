@@ -1,9 +1,9 @@
 Echo off
 
-Rem Automatic Server Backup by WinSCP v1.3.1
+Rem Automatic Server Backup by WinSCP v1.3.2
 Rem
-Rem Copyright 2013, Kaoru Ishikura
-Rem Licensed under the GPL Version 3 licenses.
+Rem Copyright 2014, Kaoru Ishikura
+Rem Released under the GPL Version 3 license.
 
 Rem Backup environment variables.
 Rem ##############################################
