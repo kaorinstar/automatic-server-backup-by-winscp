@@ -1,15 +1,17 @@
-#automatic-server-backup-by-winscp
+#Automatic Server Backup by WinSCP
 
 Automatic Server Backup by WinSCPは、  
 WinSCPとWindowsのタスク機能を使用して自動的にサーバーのバックアップを行います。
 
 ## 目次
-1. 注意
-2. インストール
-3. アンインストール
-4. 設定
-5. 使い方
-6. ライセンス
+[1. 注意](#1-注意)  
+[2. インストール](#2-インストール)  
+[3. アンインストール](#3-アンインストール)  
+[4. 設定](#4-設定)  
+[5. 使い方](#5-使い方)  
+[6. 開発環境](#6-開発環境)  
+[7. 謝辞](#7-謝辞)  
+[8. 著作権とライセンス](#8-著作権とライセンス)
 
 ## 1. 注意
 このプログラムでサーバーのバックアップを実行する前に  
@@ -176,13 +178,19 @@ WinSCPとWindowsのタスク機能を使用して自動的にサーバーのバ�
 
    2. 完了です。
 
-## 6. ライセンス
-Copyright &copy; 2012 Kaoru Ishikura.  
-Licensed under the [GPL Version 3 licenses][GPL].
+## 6. 開発環境
+* プログラムのソースは、 [GitHub](https://github.com/kaorinstar/automatic-server-backup-by-winscp) にホストされています。 
+* プログラムの問題・質問・機能要求は、 [GitHub Issues](https://github.com/kaorinstar/automatic-server-backup-by-winscp/issues) へご投稿ください。
+
+## 7. 謝辞
+インスピレーションを与えていただいた、多くのブロガーに感謝します。
+
+## 8. 著作権とライセンス
+Copyright &copy; 2014 Kaoru Ishikura.  
+[GPL Version 3 license](https://github.com/kaorinstar/automatic-server-backup-by-winscp/blob/master/LICENSE) の下にリリースされています。
 
 [LINK-WINXP-ADDTASK]: http://support.microsoft.com/kb/881869/ja
 [LINK-WINVISTA-ADDTASK]: http://windows.microsoft.com/ja-JP/windows-vista/Schedule-a-task
 [LINK-WIN7-ADDTASK]: http://windows.microsoft.com/ja-JP/windows7/Schedule-a-task
 [LINK-7ZIP]: http://sevenzip.sourceforge.jp/download.html
 [LINK-WINSCP-MASKS]: http://winscp.net/eng/docs/file_mask
-[GPL]: http://www.gnu.org/licenses/gpl.html
