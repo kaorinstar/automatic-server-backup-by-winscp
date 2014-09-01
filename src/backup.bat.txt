@@ -1,6 +1,6 @@
 Echo off
 
-Rem Automatic Server Backup by WinSCP v1.3.2
+Rem Automatic Server Backup by WinSCP v1.3.4
 Rem
 Rem Copyright 2014, Kaoru Ishikura
 Rem Released under the GPL Version 3 license.
@@ -89,7 +89,7 @@ If Not "%LATEST_FILE_NAME%" == "" (
         If %ERRORLEVEL% == 0 (
             Echo ファイルの解凍が完了しました
         ) Else (
-            Echo ファイルの解凍が失敗しました
+            Echo ファイルの解凍に失敗しました
         )
         Echo;
     )
@@ -145,9 +145,9 @@ Rem If synchronization fails, retry.
 Find "%TIMEOUT_MESSAGE%" "%SCP_LOG_PATH%">NUL
 If %ERRORLEVEL% == 0 (
     If %MAX_SYNC_RETRIES% Geq %CNT% (
-        Echo サーバーとの接続がタイムアウトになりました
-        Echo サーバーと再同期中...
         Set /a CNT=%CNT%+1
+        Echo サーバーとの接続がタイムアウトになりました
+        Echo サーバーと再同期中（%CNT%回目）...
         Set SCP_LOG_PATH=%TEMP_DIR_PATH%\scp%CNT%.log
         Goto sync
     ) Else (
@@ -178,7 +178,7 @@ If Exist "%SEVEN_ZIP_PATH%" If "%COMPRESSION_MODE%" == "y" (
     If %ERRORLEVEL% == 0 (
         Echo ファイルの圧縮が完了しました
     ) Else (
-        Echo ファイルの圧縮が失敗しました
+        Echo ファイルの圧縮に失敗しました
     )
     Rmdir /s /q "%NEW_BACKUP_PATH%"
     Echo;

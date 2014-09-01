@@ -1,4 +1,4 @@
-; Automatic Server Backup by WinSCP v1.3.2
+; Automatic Server Backup by WinSCP v1.3.4
 ;
 ; Copyright 2014, Kaoru Ishikura
 ; Released under the GPL Version 3 license.
